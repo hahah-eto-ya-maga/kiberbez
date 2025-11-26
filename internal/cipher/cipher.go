@@ -3,8 +3,10 @@ package cipher
 type Cipher interface {
 	Encrypt(string) string
 	Decrypt(string) string
-	Bruteforce(string) []string
+	Hack(string) []string
 	Name() string
+	GetKey() string
+	SetKey(any)
 }
 
 func NewCipher(name string, key any) Cipher {

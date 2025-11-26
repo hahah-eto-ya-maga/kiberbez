@@ -3,55 +3,56 @@ package ui
 import (
 	"bufio"
 	"fmt"
+	"kiberbez/internal/ui/colors"
+	"kiberbez/internal/ui/menuActions"
+	"kiberbez/internal/ui/utils"
 	"os"
-	"strings"
 )
+
+type MenuAction struct {
+	Title string
+	Exec  func()
+}
 
 func RunMenu() {
 	reader := bufio.NewReader(os.Stdin)
 
+	utils.ClearScreen()
 	c := SelectCipher()
+	utils.ClearScreen()
 
 	for {
-		fmt.Println("\n---", c.Name(), "Cipher ---")
-		fmt.Println("1. Encrypt")
-		fmt.Println("2. Decrypt")
-		fmt.Println("3. Bruteforce")
-		fmt.Println("9. Change cipher")
-		fmt.Println("0. Exit")
+		fmt.Println("[Шифр] " + colors.GREEN + c.Name() + colors.DEFAULT)
+		fmt.Println("[Ключ] " + colors.GREEN + c.GetKey() + colors.DEFAULT)
 
-		fmt.Print("Choose: ")
-		choice, _ := reader.ReadString('\n')
-		choice = strings.TrimSpace(choice)
-
-		switch choice {
-
-		case "1":
-			fmt.Print("Enter text: ")
-			text, _ := reader.ReadString('\n')
-			text = strings.TrimSpace(text)
-			fmt.Println("Result:", c.Encrypt(text))
-
-		case "2":
-			fmt.Print("Enter text: ")
-			text, _ := reader.ReadString('\n')
-			text = strings.TrimSpace(text)
-			fmt.Println("Result:", c.Decrypt(text))
-
-		case "3":
-			fmt.Print("Enter text: ")
-			text, _ := reader.ReadString('\n')
-			text = strings.TrimSpace(text)
-			fmt.Println("Results:")
-			for _, r := range c.Bruteforce(text) {
-				fmt.Println(" -", r)
-			}
-
-		case "9":
-			c = SelectCipher()
-
-		case "0":
-			return
+		actions := []MenuAction{
+			{"Зашифровать", func() {
+				menuActions.EncryptCase(reader, c)
+			}},
+			{"Дешифровать", func() {
+				menuActions.DecryptCase(reader, c)
+			}},
+			{"Взломать", func() {
+				menuActions.HackCase(reader, c)
+			}},
+			{"Поменять ключ", func() {
+				menuActions.ReadKeyForCipherCase(reader, c)
+			}},
+			{"Поменять шифр", func() {
+				c = SelectCipher()
+			}},
+			{"Выйти", func() {
+				os.Exit(0)
+			}},
 		}
+
+		choice := utils.GetUserChoice(actions, func(action MenuAction) {
+			fmt.Print(action.Title)
+		})
+
+		choice.Exec()
+		fmt.Println()
+		fmt.Println("--------------------------------------------------")
+		fmt.Println()
 	}
 }
