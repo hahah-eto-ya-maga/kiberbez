@@ -29,27 +29,8 @@ func (c *Caesar) SetKey(shift any) {
 func (c *Caesar) Encrypt(text string) string {
 	var result strings.Builder
 
-	for _, char := range text {
-		switch {
-		case 'а' <= char && char <= 'я':
-			shift := (c.Shift%32 + 32) % 32
-			newChar := rune((int(char-'а')+shift)%32 + int('а'))
-			result.WriteRune(newChar)
-		case 'А' <= char && char <= 'Я':
-			shift := (c.Shift%32 + 32) % 32
-			newChar := rune((int(char-'А')+shift)%32 + int('А'))
-			result.WriteRune(newChar)
-		case 'a' <= char && char <= 'z':
-			shift := (c.Shift%27 + 27) % 27
-			newChar := rune((int(char-'a')+shift)%27 + int('a'))
-			result.WriteRune(newChar)
-		case 'A' <= char && char <= 'Z':
-			shift := (c.Shift%27 + 27) % 27
-			newChar := rune((int(char-'A')+shift)%27 + int('A'))
-			result.WriteRune(newChar)
-		default:
-			result.WriteRune(char)
-		}
+	for _, r := range text {
+		result.WriteRune(shiftRune(r, c.Shift))
 	}
 	return result.String()
 }
@@ -62,26 +43,29 @@ func (c *Caesar) Hack(text string) []string {
 	var result []string
 	result = append(result, "["+colors.CYAN+"Метод перебора сдвигов"+colors.DEFAULT+"]")
 
-	alphabetSize := detectAlphabet(text)
-
-	for shift := 0; shift < alphabetSize; shift++ {
-		temp := Caesar{Shift: -shift} // ну это плохо прям конечно
-		result = append(result, fmt.Sprintf("%s [сдвиг %d]", temp.Encrypt(text), shift))
+	for shift := 1; shift < 34; shift++ {
+		temp := (&Caesar{Shift: -shift}).Encrypt(text) // ну это плохо прям конечно
+		result = append(result, fmt.Sprintf("%s [сдвиг %d]", temp, shift))
 	}
-
-	result = append(result, colors.YELLOW+"В результате взлома правильный текст находится там, где он читается осмысленно"+colors.DEFAULT)
+	result = append(result, colors.CYAN+"В результате взлома правильный текст находится там, где он читается осмысленно"+colors.DEFAULT)
 
 	return result
 }
 
-func detectAlphabet(text string) int {
-	for _, ch := range text {
-		switch {
-		case 'а' <= ch && ch <= 'я', 'А' <= ch && ch <= 'Я':
-			return 32
-		case 'a' <= ch && ch <= 'z', 'A' <= ch && ch <= 'Z':
-			return 27
-		}
+func shiftRune(r rune, shift int) rune {
+	switch {
+	case 'а' <= r && r <= 'я':
+		return 'а' + rune((int(r-'а')+shift+32)%32)
+	case 'А' <= r && r <= 'Я':
+		return 'А' + rune((int(r-'А')+shift+32)%32)
 	}
-	return 32
+
+	switch {
+	case 'a' <= r && r <= 'z':
+		return 'a' + rune((int(r-'a')+shift+26)%26)
+	case 'A' <= r && r <= 'Z':
+		return 'A' + rune((int(r-'A')+shift+26)%26)
+	}
+
+	return r
 }
