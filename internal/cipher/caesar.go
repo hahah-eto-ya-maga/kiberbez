@@ -27,16 +27,11 @@ func (c *Caesar) SetKey(shift any) {
 }
 
 func (c *Caesar) Encrypt(text string) string {
-	var result strings.Builder
-
-	for _, r := range text {
-		result.WriteRune(shiftRune(r, c.Shift))
-	}
-	return result.String()
+	return shiftedEncrypt(text, c.Shift)
 }
 
 func (c *Caesar) Decrypt(text string) string {
-	return (&Caesar{Shift: -c.Shift}).Encrypt(text)
+	return shiftedEncrypt(text, -c.Shift)
 }
 
 func (c *Caesar) Hack(text string) []string {
@@ -44,7 +39,7 @@ func (c *Caesar) Hack(text string) []string {
 	result = append(result, "["+colors.CYAN+"Метод перебора сдвигов"+colors.DEFAULT+"]")
 
 	for shift := 1; shift < 34; shift++ {
-		temp := (&Caesar{Shift: -shift}).Encrypt(text) // ну это плохо прям конечно
+		temp := shiftedEncrypt(text, -shift)
 		result = append(result, fmt.Sprintf("%s [сдвиг %d]", temp, shift))
 	}
 	result = append(result, colors.CYAN+"В результате взлома правильный текст находится там, где он читается осмысленно"+colors.DEFAULT)
@@ -52,20 +47,10 @@ func (c *Caesar) Hack(text string) []string {
 	return result
 }
 
-func shiftRune(r rune, shift int) rune {
-	switch {
-	case 'а' <= r && r <= 'я':
-		return 'а' + rune((int(r-'а')+shift+32)%32)
-	case 'А' <= r && r <= 'Я':
-		return 'А' + rune((int(r-'А')+shift+32)%32)
+func shiftedEncrypt(text string, shift int) string {
+	var result strings.Builder
+	for _, r := range text {
+		result.WriteRune(ShiftRune(r, shift))
 	}
-
-	switch {
-	case 'a' <= r && r <= 'z':
-		return 'a' + rune((int(r-'a')+shift+26)%26)
-	case 'A' <= r && r <= 'Z':
-		return 'A' + rune((int(r-'A')+shift+26)%26)
-	}
-
-	return r
+	return result.String()
 }

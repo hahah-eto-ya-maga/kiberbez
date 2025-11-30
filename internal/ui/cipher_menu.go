@@ -11,7 +11,7 @@ import (
 
 func SelectCipher() cipher.Cipher {
 	reader := bufio.NewReader(os.Stdin)
-
+	
 	for {
 		fmt.Println("Доступные шифры:")
 		cipherName := utils.GetUserChoice(cipher.ListCiphers(), func(name string) {
