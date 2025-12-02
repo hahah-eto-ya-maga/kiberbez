@@ -35,7 +35,7 @@ func (c *Vigenere) Decrypt(text string) string {
 
 func (c *Vigenere) Hack(text string) []string {
 	var result []string
-
+	result = append(result, "Еще не реализовано...")
 	return result
 }
 
