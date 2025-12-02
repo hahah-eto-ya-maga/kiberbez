@@ -1,7 +1,6 @@
 package cipher
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -18,7 +17,7 @@ func (c *Vigenere) Name() string {
 }
 
 func (c *Vigenere) GetKey() string {
-	return fmt.Sprintf("%s", c.Key)
+	return c.Key
 }
 
 func (c *Vigenere) SetKey(key any) {
@@ -35,7 +34,7 @@ func (c *Vigenere) Decrypt(text string) string {
 
 func (c *Vigenere) Hack(text string) []string {
 	var result []string
-	result = append(result, "Еще не реализовано...")
+	result = append(result, "Еще не реализовано, пока не осилил...")
 	return result
 }
 
