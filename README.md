@@ -1,2 +1,3 @@
 По пути internal/cipher/ содержатся файлы шифраторы, взломщики, крипторы, не знаю как назвать. В общем там находятся caesar.go, vigenere.go и тд, внутри которых логика шифрования, дешифрования, взлома.  
-Запуск: `go run cmd/cipher-cli/main.go`
+Запуск: `go run cmd/cipher-cli/main.go`  
+Либо скачать exe файл в release 
