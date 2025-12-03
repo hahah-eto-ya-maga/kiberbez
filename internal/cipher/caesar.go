@@ -26,12 +26,16 @@ func (c *Caesar) SetKey(shift any) {
 	c.Shift = shift.(int)
 }
 
-func (c *Caesar) Encrypt(text string) string {
-	return shiftedEncrypt(text, c.Shift)
+func (c *Caesar) Encrypt(text string) []string {
+	var result []string
+	result = append(result, shiftedEncrypt(text, c.Shift))
+	return result
 }
 
-func (c *Caesar) Decrypt(text string) string {
-	return shiftedEncrypt(text, -c.Shift)
+func (c *Caesar) Decrypt(text string) []string {
+	var result []string
+	result = append(result, shiftedEncrypt(text, -c.Shift))
+	return result
 }
 
 func (c *Caesar) Hack(text string) []string {

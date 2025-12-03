@@ -6,8 +6,8 @@ const (
 )
 
 type Cipher interface {
-	Encrypt(string) string
-	Decrypt(string) string
+	Encrypt(string) []string
+	Decrypt(string) []string
 	Hack(string) []string
 	Name() string
 	GetKey() string
