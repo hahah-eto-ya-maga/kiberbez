@@ -35,6 +35,15 @@ func ReadKeyForCipher(reader *bufio.Reader, cipherName string) any {
 
 			return input
 		}
+	case cipher.RC5Name:
+		for {
+			fmt.Print("Введите ключ слово (строка из БУКВ): ")
+			input, _ := reader.ReadString('\n')
+			input = strings.TrimSpace(input)
+
+			return input
+		}
+
 	}
 	return nil
 }
