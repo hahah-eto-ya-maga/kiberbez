@@ -26,7 +26,7 @@ func NewCipher(name string, key any) Cipher {
 			return NewVigenere(k)
 		}
 	case RC5Name:
-		if k, ok := key.(int); ok {
+		if k, ok := key.(RC5Key); ok {
 			return NewRC5(k)
 		}
 	}

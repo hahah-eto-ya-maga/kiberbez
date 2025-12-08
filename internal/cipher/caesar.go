@@ -15,7 +15,7 @@ func NewCaesar(shift int) *Caesar {
 }
 
 func (c *Caesar) Name() string {
-	return "Caesar"
+	return CaesarName
 }
 
 func (c *Caesar) GetKey() string {
