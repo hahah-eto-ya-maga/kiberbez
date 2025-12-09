@@ -4,6 +4,7 @@ const (
 	CaesarName   string = "caesar"
 	VigenereName string = "vigenere"
 	RC5Name      string = "rc5"
+	RSAName      string = "rsa"
 )
 
 type Cipher interface {
@@ -29,10 +30,14 @@ func NewCipher(name string, key any) Cipher {
 		if k, ok := key.(RC5Key); ok {
 			return NewRC5(k)
 		}
+	case RSAName:
+		if k, ok := key.(RSAKey); ok {
+			return NewRSA(k)
+		}
 	}
 	return nil
 }
 
 func ListCiphers() []string {
-	return []string{CaesarName, VigenereName, RC5Name}
+	return []string{CaesarName, VigenereName, RC5Name, RSAName}
 }
