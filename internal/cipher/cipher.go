@@ -3,6 +3,7 @@ package cipher
 const (
 	CaesarName   string = "caesar"
 	VigenereName string = "vigenere"
+	RC5Name      string = "rc5"
 )
 
 type Cipher interface {
@@ -24,10 +25,14 @@ func NewCipher(name string, key any) Cipher {
 		if k, ok := key.(string); ok {
 			return NewVigenere(k)
 		}
+	case RC5Name:
+		if k, ok := key.(RC5Key); ok {
+			return NewRC5(k)
+		}
 	}
 	return nil
 }
 
 func ListCiphers() []string {
-	return []string{CaesarName, VigenereName}
+	return []string{CaesarName, VigenereName, RC5Name}
 }
