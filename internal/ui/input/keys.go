@@ -106,7 +106,7 @@ func ReadKeyForCipher(reader *bufio.Reader, cipherName string) any {
 				continue
 			}
 
-			return cipher.RSAKey{
+			return cipher.RSAProps{
 				P: p,
 				Q: q,
 				E: e,

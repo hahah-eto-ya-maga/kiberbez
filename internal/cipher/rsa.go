@@ -7,18 +7,51 @@ import (
 	"strings"
 )
 
+type publicKey struct {
+	e *big.Int
+	n *big.Int
+}
+
+type privateKey struct {
+	d *big.Int
+	n *big.Int
+}
+
 type RSAKey struct {
-	P *big.Int
-	Q *big.Int
-	E *big.Int
+	prKey  privateKey
+	pubKey publicKey
 }
 
 type RSA struct {
 	Key RSAKey
 }
 
-func NewRSA(key RSAKey) *RSA {
-	return &RSA{Key: key}
+type RSAProps struct {
+	P *big.Int
+	Q *big.Int
+	E *big.Int
+}
+
+func NewRSA(key RSAProps) *RSA {
+	n := new(big.Int).Mul(
+		key.P, key.Q,
+	)
+	pMinus1 := new(big.Int).Sub(key.P, big.NewInt(1))
+	qMinus1 := new(big.Int).Sub(key.Q, big.NewInt(1))
+	phi := new(big.Int).Mul(pMinus1, qMinus1)
+
+	d := new(big.Int).ModInverse(key.E, phi)
+
+	return &RSA{Key: RSAKey{
+		prKey: privateKey{
+			d: d,
+			n: n,
+		},
+		pubKey: publicKey{
+			e: key.E,
+			n: n,
+		},
+	}}
 }
 
 func (c *RSA) Name() string {
@@ -27,10 +60,8 @@ func (c *RSA) Name() string {
 
 func (c *RSA) GetKey() string {
 	var result []string
-	result = append(result, fmt.Sprintf("Ключ%s:\n", colors.DEFAULT))
-	result = append(result, fmt.Sprintf("%sp%s: %s\n", colors.GREEN, colors.DEFAULT, c.Key.P))
-	result = append(result, fmt.Sprintf("%sq%s: %s\n", colors.GREEN, colors.DEFAULT, c.Key.Q))
-	result = append(result, fmt.Sprintf("%se%s: %s\n", colors.GREEN, colors.DEFAULT, c.Key.E))
+	result = append(result, fmt.Sprintf("Публичный ключ%s: (%v, %v)\n", colors.DEFAULT, c.Key.pubKey.e, c.Key.pubKey.n))
+	result = append(result, fmt.Sprintf("Приватный ключ%s: (%v, %v)\n", colors.DEFAULT, c.Key.prKey.d, c.Key.prKey.n))
 
 	return strings.Join(result, "")
 }

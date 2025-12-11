@@ -31,7 +31,7 @@ func NewCipher(name string, key any) Cipher {
 			return NewRC5(k)
 		}
 	case RSAName:
-		if k, ok := key.(RSAKey); ok {
+		if k, ok := key.(RSAProps); ok {
 			return NewRSA(k)
 		}
 	}
