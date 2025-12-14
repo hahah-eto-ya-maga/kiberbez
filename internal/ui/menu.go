@@ -41,6 +41,9 @@ func RunMenu() {
 			{"Поменять шифр", func() {
 				c = SelectCipher()
 			}},
+			{"Очистить экран", func() {
+				utils.ClearScreen()
+			}},
 			{"Выйти", func() {
 				os.Exit(0)
 			}},
@@ -52,7 +55,9 @@ func RunMenu() {
 
 		choice.Exec()
 		fmt.Println()
-		fmt.Println("--------------------------------------------------")
+		if choice.Title != "Очистить экран" {
+			fmt.Println("--------------------------------------------------")
+		}
 		fmt.Println()
 	}
 }
