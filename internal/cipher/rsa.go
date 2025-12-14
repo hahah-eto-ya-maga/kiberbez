@@ -55,7 +55,7 @@ func NewRSA(key RSAProps) *RSA {
 }
 
 func (c *RSA) Name() string {
-	return RC5Name
+	return RSAName
 }
 
 func (c *RSA) GetKey() string {
@@ -73,11 +73,60 @@ func (c *RSA) SetKey(key any) {
 func (c *RSA) Encrypt(text string) []string {
 	var result []string
 
+	e := c.Key.prKey.d
+	n := c.Key.pubKey.n
+
+	blockSize := (n.BitLen() - 1) / 8
+	if blockSize < 1 {
+		blockSize = 1
+	}
+
+	textBytes := []byte(text)
+
+	var encryptedBlocks []string
+	for i := 0; i < len(textBytes); i += blockSize {
+		end := i + blockSize
+		if end > len(textBytes) {
+			end = len(textBytes)
+		}
+
+		chunk := textBytes[i:end]
+
+		M := new(big.Int).SetBytes(chunk)
+
+		S := new(big.Int).Exp(M, e, n)
+
+		encryptedBlocks = append(encryptedBlocks, S.String())
+	}
+
+	result = append(result, strings.Join(encryptedBlocks, ":"))
+
 	return result
 }
 
 func (c *RSA) Decrypt(text string) []string {
 	var result []string
+
+	d := c.Key.pubKey.e
+	n := c.Key.pubKey.n
+
+	if text == "" {
+		return []string{""}
+	}
+
+	blocks := strings.Split(text, ":")
+
+	var decryptedBytes []byte
+	for _, blockStr := range blocks {
+		S := new(big.Int)
+		S.SetString(blockStr, 10)
+
+		M := new(big.Int).Exp(S, d, n)
+
+		decryptedBytes = append(decryptedBytes, M.Bytes()...)
+	}
+
+	result = append(result, string(decryptedBytes))
 
 	return result
 }

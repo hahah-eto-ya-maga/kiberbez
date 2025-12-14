@@ -63,21 +63,21 @@ func ReadKeyForCipher(reader *bufio.Reader, cipherName string) any {
 		}
 	case cipher.RSAName:
 		for {
-			fmt.Print("Введите p: ")
+			fmt.Print("Введите p (простое число): ")
 			input, _ := reader.ReadString('\n')
 			input = strings.TrimSpace(input)
 			px, err := strconv.Atoi(input)
-			if err != nil {
-				fmt.Println("Неверный ввод, повторите попытку")
+			if err != nil || !big.NewInt(int64(px)).ProbablyPrime(20) {
+				fmt.Println("Неверный ввод, повторите попытку. p должно быть простым")
 				continue
 			}
 
-			fmt.Print("Введите q: ")
+			fmt.Print("Введите q (простое число): ")
 			input, _ = reader.ReadString('\n')
 			input = strings.TrimSpace(input)
 			qx, err := strconv.Atoi(input)
-			if err != nil {
-				fmt.Println("Неверный ввод, повторите попытку")
+			if err != nil || !big.NewInt(int64(qx)).ProbablyPrime(20) {
+				fmt.Println("Неверный ввод, повторите попытку. q должно быть простым")
 				continue
 			}
 
