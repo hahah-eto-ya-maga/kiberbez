@@ -61,7 +61,7 @@ func (c *RSA) Name() string {
 func (c *RSA) GetKey() string {
 	var result []string
 	result = append(result, fmt.Sprintf("Публичный ключ%s: (%v, %v)\n", colors.DEFAULT, c.Key.pubKey.e, c.Key.pubKey.n))
-	result = append(result, fmt.Sprintf("Приватный ключ%s: (%v, %v)\n", colors.DEFAULT, c.Key.prKey.d, c.Key.prKey.n))
+	result = append(result, fmt.Sprintf("%sПриватный ключ%s: (%v, %v)\n", colors.GREEN, colors.DEFAULT, c.Key.prKey.d, c.Key.prKey.n))
 
 	return strings.Join(result, "")
 }

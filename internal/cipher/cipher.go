@@ -1,10 +1,11 @@
 package cipher
 
 const (
-	CaesarName   string = "caesar"
-	VigenereName string = "vigenere"
-	RC5Name      string = "rc5"
-	RSAName      string = "rsa"
+	CaesarName    string = "caesar"
+	VigenereName  string = "vigenere"
+	RC5Name       string = "rc5"
+	RSAName       string = "rsa"
+	StreamRC5Name string = "rc5-stream"
 )
 
 type Cipher interface {
@@ -34,10 +35,14 @@ func NewCipher(name string, key any) Cipher {
 		if k, ok := key.(RSAProps); ok {
 			return NewRSA(k)
 		}
+	case StreamRC5Name:
+		if k, ok := key.(RC5Key); ok {
+			return NewStreamRC5(NewRC5(k))
+		}
 	}
 	return nil
 }
 
 func ListCiphers() []string {
-	return []string{CaesarName, VigenereName, RC5Name, RSAName}
+	return []string{CaesarName, VigenereName, RC5Name, RSAName, StreamRC5Name}
 }
