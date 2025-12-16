@@ -36,7 +36,7 @@ func ReadKeyForCipher(reader *bufio.Reader, cipherName string) any {
 
 			return input
 		}
-	case cipher.RC5Name:
+	case cipher.RC5Name, cipher.StreamRC5Name:
 		for {
 			fmt.Print("Введите ключ: ")
 			input, _ := reader.ReadString('\n')
@@ -113,5 +113,6 @@ func ReadKeyForCipher(reader *bufio.Reader, cipherName string) any {
 			}
 		}
 	}
+
 	return nil
 }

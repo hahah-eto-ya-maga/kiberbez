@@ -60,15 +60,15 @@ func (c *RC5) Encrypt(text string) []string {
 		S[i] = S[i-1] + Q
 	}
 
-	L := makeWordArray(key)
+	L := c.makeWordArray(key)
 
 	G, H := uint32(0), uint32(0)
 	i, j := 0, 0
 	n := max(3*len(S), 3*len(L))
 	for k := 0; k < n; k++ {
-		G = rotl32(S[i]+G+H, 3)
+		G = c.rotl32(S[i]+G+H, 3)
 		S[i] = G
-		H = rotl32(L[j]+G+H, G+H)
+		H = c.rotl32(L[j]+G+H, G+H)
 		L[j] = H
 		i = (i + 1) % len(S)
 		j = (j + 1) % len(L)
@@ -90,8 +90,8 @@ func (c *RC5) Encrypt(text string) []string {
 		B += S[1]
 
 		for round := 1; round <= r; round++ {
-			A = rotl32(A^B, B) + S[2*round]
-			B = rotl32(B^A, A) + S[2*round+1]
+			B = c.rotl32(B^A, A) + S[2*round+1]
+			A = c.rotl32(A^B, B) + S[2*round]
 		}
 
 		block := fmt.Sprintf("%08x%08x", A, B)
@@ -115,15 +115,15 @@ func (c *RC5) Decrypt(text string) []string {
 		S[i] = S[i-1] + Q
 	}
 
-	L := makeWordArray(key)
+	L := c.makeWordArray(key)
 
 	G, H := uint32(0), uint32(0)
 	i, j := 0, 0
 	n := max(3*len(S), 3*len(L))
 	for k := 0; k < n; k++ {
-		G = rotl32(S[i]+G+H, 3)
+		G = c.rotl32(S[i]+G+H, 3)
 		S[i] = G
-		H = rotl32(L[j]+G+H, G+H)
+		H = c.rotl32(L[j]+G+H, G+H)
 		L[j] = H
 		i = (i + 1) % len(S)
 		j = (j + 1) % len(L)
@@ -140,8 +140,8 @@ func (c *RC5) Decrypt(text string) []string {
 		B32 := uint32(B)
 
 		for round := r; round >= 1; round-- {
-			B32 = rotr32(B32-S[2*round+1], A32) ^ A32
-			A32 = rotr32(A32-S[2*round], B32) ^ B32
+			B32 = c.rotr32(B32-S[2*round+1], A32) ^ A32
+			A32 = c.rotr32(A32-S[2*round], B32) ^ B32
 		}
 
 		B32 -= S[1]
@@ -166,15 +166,15 @@ func (c *RC5) Hack(text string) []string {
 	return result
 }
 
-func rotl32(x, y uint32) uint32 {
+func (c *RC5) rotl32(x, y uint32) uint32 {
 	return (x << (y & 31)) | (x >> (32 - (y & 31)))
 }
 
-func rotr32(x, y uint32) uint32 {
+func (c *RC5) rotr32(x, y uint32) uint32 {
 	return (x >> (y & 31)) | (x << (32 - (y & 31)))
 }
 
-func makeWordArray(key []byte) []uint32 {
+func (c *RC5) makeWordArray(key []byte) []uint32 {
 	// w только 32
 	cLen := (len(key) + 3) / 4
 	L := make([]uint32, cLen)
